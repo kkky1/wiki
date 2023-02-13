@@ -19,6 +19,7 @@ public class Filter implements javax.servlet.Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         log.info("当前的请求地址为{}", req.getRequestURI());
+        log.info("远程地址为{}", req.getRemoteAddr());
         log.info("当前的请求方式为{}", req.getMethod());
         long start = System.currentTimeMillis();
         filterChain.doFilter(req, servletResponse);//放行
