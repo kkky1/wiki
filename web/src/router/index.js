@@ -1,6 +1,6 @@
 import VueRouter from "vue-router";
 import home from '@/views/Home'
-
+import content from '@/views/MyContent'
 const router = new VueRouter({
     routes: [
         {
@@ -10,6 +10,10 @@ const router = new VueRouter({
         {
             path:'/home',
             component:home
+        },
+        {
+            path: '/content',
+            component: content
         }
     ]
 })

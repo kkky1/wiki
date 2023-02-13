@@ -10,7 +10,7 @@
         <a-sub-menu key="sub1">
           <template #title>
               <span>
-                <user-outlined />
+                <user-outlined/>
                 subnav 1
               </span>
           </template>
@@ -22,7 +22,7 @@
         <a-sub-menu key="sub2">
           <template #title>
               <span>
-                <laptop-outlined />
+                <laptop-outlined/>
                 subnav 2
               </span>
           </template>
@@ -34,7 +34,7 @@
         <a-sub-menu key="sub3">
           <template #title>
               <span>
-                <notification-outlined />
+                <notification-outlined/>
                 subnav 3
               </span>
           </template>
@@ -49,22 +49,43 @@
       <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
-        Content
+        <Mycontent :bookContent="bookContent"/>
       </a-layout-content>
     </a-layout>
   </a-layout>
 </template>
 
 <script>
+import {UserOutlined, LaptopOutlined, NotificationOutlined} from '@ant-design/icons-vue';
+import {defineComponent, ref} from 'vue';
 import axios from "axios";
-export default {
+import Mycontent from '@/views/MyContent'
+
+export default defineComponent({
   name: 'Home',
+  components: {
+    UserOutlined,
+    LaptopOutlined,
+    NotificationOutlined,
+    Mycontent
+  },
   mounted() {
-    axios.get('http://localhost/ebook/list/vue').then((resp)=>{
-      console.log(resp)
+    axios.get('/ebook/list').then((resp) => {
+      if (resp.status === 200) {
+        this.bookContent = resp.data
+      } else {
+        alert("数据加载失败")
+      }
     })
   }
-}
+  ,
+  data() {
+    return {
+      bookContent: []
+    }
+  }
+  ,
+})
 </script>
 
 <style scoped>
