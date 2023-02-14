@@ -1,5 +1,7 @@
 package com.example.wiki.respose;
 
+import com.example.wiki.entity.Ebook;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +10,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2023-02-12 15:53:11
  */
-public class EbookResp implements Serializable {
+public class EbookResp extends Ebook implements Serializable {
     private static final long serialVersionUID = -96717645756397480L;
     /**
      * id

@@ -2,6 +2,8 @@ package com.example.wiki.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wiki.entity.Ebook;
 import com.example.wiki.mapper.EbookMapper;
@@ -22,6 +24,9 @@ import java.util.List;
  */
 @Service
 public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements EbookService {
+
+    @Resource
+    private EbookService ebookService;
 
     @Resource
     private EbookMapper ebookMapper;
@@ -45,4 +50,18 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements
         }
         return ebookResps;
     }
+
+    @Override
+    public IPage<Ebook> getPageBook(Ebook ebook, int current, int pagesize) {
+        IPage<Ebook> page = new Page<>(current, pagesize);
+        LambdaQueryWrapper<Ebook> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(Ebook::getViewCount);
+        return ebookService.page(page);
+    }
+
+//    进行分页查询
+//    @Override
+//    public IPage<Ebook> getPageBook(Ebook ebook,int current,int pagesize){
+////        return ebookService.getPageBook()
+//    }
 }

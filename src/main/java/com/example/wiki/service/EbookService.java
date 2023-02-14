@@ -1,5 +1,6 @@
 package com.example.wiki.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.wiki.entity.Ebook;
 import com.example.wiki.respose.EbookResp;
@@ -17,5 +18,7 @@ public interface EbookService extends IService<Ebook> {
     List<Ebook> getBookList();
 
     List<EbookResp> getLikeList(EbookResp ebook, String name);
+
+    IPage<Ebook> getPageBook(Ebook ebook, int current, int pagesize);
 
 }

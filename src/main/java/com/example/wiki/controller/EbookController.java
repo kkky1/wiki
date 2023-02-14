@@ -1,8 +1,12 @@
 package com.example.wiki.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.wiki.entity.Ebook;
 import com.example.wiki.respose.CommonResponse;
 import com.example.wiki.respose.EbookResp;
+import com.example.wiki.service.EbookService;
 import com.example.wiki.service.impl.EbookServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +25,31 @@ import java.util.List;
 public class EbookController {
 
     @Resource
+    private EbookService ebookService1;
+
+    @Resource
     private EbookServiceImpl ebookService;
 
     @GetMapping("/list")
-    public CommonResponse<Ebook> getList(){
-        return new CommonResponse(true,"null",ebookService.getBookList());
+    public CommonResponse<Ebook> getList() {
+        return new CommonResponse(true, "null", ebookService.getBookList());
     }
 
     @GetMapping("/list/{name}")
-    public CommonResponse<EbookResp> getLikeBookList(EbookResp ebook, @PathVariable String name){
-        return new CommonResponse(true,null,ebookService.getLikeList(ebook,name));
+    public CommonResponse<EbookResp> getLikeBookList(EbookResp ebook, @PathVariable String name) {
+        return new CommonResponse(true, null, ebookService.getLikeList(ebook, name));
     }
 
+    /**
+     * @param ebook
+     * @param current
+     * @param pagesize
+     * @return
+     */
+//    分页查询
+    @GetMapping("/list/{current}/{pagesize}")
+    public CommonResponse<IPage> getPageBookList(EbookResp ebook, @PathVariable() Integer current, @PathVariable() Integer pagesize) {
+        return new CommonResponse<IPage>(true,null,ebookService.getPageBook(ebook,current,pagesize));
+    }
 }
 
