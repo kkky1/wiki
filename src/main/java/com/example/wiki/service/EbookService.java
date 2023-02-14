@@ -21,4 +21,7 @@ public interface EbookService extends IService<Ebook> {
 
     IPage<Ebook> getPageBook(Ebook ebook, int current, int pagesize);
 
+//    进行数据回显
+    Ebook showBookDetail(Ebook ebook,Integer id);
+
 }

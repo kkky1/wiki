@@ -2,24 +2,24 @@
   <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
     <a-form-item label="名称">
       <a-input
-          v-decorator="['名称', { rules: [{ required: true, message: 'Please input your note!' }] }]"
+          v-decorator="['name', { rules: [{ required: true, message: 'Please input your note!' }] }]"
       />
     </a-form-item>
     <a-form-item label="分类一">
       <a-input
-          v-decorator="['分类一', { rules: [{ required: true, message: 'Please input your note!' }] }]"
+          v-decorator="['category1Id', { rules: [{ required: true, message: 'Please input your note!' }] }]"
       />
     </a-form-item>
     <a-form-item label="分类二">
       <a-input
-          v-decorator="['分类二', { rules: [{ required: true, message: 'Please input your note!' }] }]"
+          v-decorator="['category2Id', { rules: [{ required: true, message: 'Please input your note!' }] }]"
       />
     </a-form-item>
     <a-form-item label="阅读量">
-      <a-input-number v-decorator="['input-number', { initialValue: 3 }]" :min="1" :max="10"/>
+      <a-input-number v-decorator="['read', { initialValue: 3 } ]"/>
     </a-form-item>
     <a-form-item label="点赞数">
-      <a-input-number v-decorator="['input-number', { initialValue: 3 }]" :min="1" :max="10"/>
+      <a-input-number v-decorator="['like', { initialValue: 3 }]" setFieldsValue="fromdata.voteCount"/>
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
     </a-form-item>
@@ -29,10 +29,20 @@
 <script>
 export default {
   name: 'Edit',
+  props: ['fromdata'],
+  mounted() {
+    this.form.setFieldsValue({
+      'name':this.fromdata.name,
+      'category1Id':this.fromdata.category1Id,
+      'category2Id':this.fromdata.category2Id,
+      'read': this.fromdata.viewCount,
+      'like': this.fromdata.voteCount
+    })
+  },
   data() {
     return {
       formLayout: 'horizontal',
-      form: this.$form.createForm(this, {name: 'coordinated'}),
+      form: this.$form.createForm(this),
     };
   },
   methods: {

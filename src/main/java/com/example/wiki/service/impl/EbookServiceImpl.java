@@ -59,6 +59,11 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements
         return ebookService.page(page);
     }
 
+    @Override
+    public Ebook showBookDetail(Ebook ebook,Integer id) {
+        return ebookService.getById(id);
+    }
+
 //    进行分页查询
 //    @Override
 //    public IPage<Ebook> getPageBook(Ebook ebook,int current,int pagesize){

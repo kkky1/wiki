@@ -24,8 +24,6 @@ import java.util.List;
 @RequestMapping("/ebook")
 public class EbookController {
 
-    @Resource
-    private EbookService ebookService1;
 
     @Resource
     private EbookServiceImpl ebookService;
@@ -49,7 +47,19 @@ public class EbookController {
 //    分页查询
     @GetMapping("/list/{current}/{pagesize}")
     public CommonResponse<IPage> getPageBookList(EbookResp ebook, @PathVariable() Integer current, @PathVariable() Integer pagesize) {
-        return new CommonResponse<IPage>(true,null,ebookService.getPageBook(ebook,current,pagesize));
+        return new CommonResponse<IPage>(true, null, ebookService.getPageBook(ebook, current, pagesize));
+    }
+
+//    进行数据回显
+    @GetMapping("/detail/{id}")
+    public CommonResponse<Ebook> showDetail(EbookResp ebook,@PathVariable int id){
+        if (ebookService.showBookDetail(ebook,id) != null){
+            return new CommonResponse<>(true,null,ebookService.showBookDetail(ebook,id));
+        }
+        else{
+            return new CommonResponse<Ebook>(false,"加载失败",null);
+        }
+
     }
 }
 

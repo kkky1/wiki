@@ -8,14 +8,12 @@
         </a-button>
       </a>
       <a slot="edit" slot-scope="text" href="javascript:;">
-        <a-button type="primary" @click="showModal">
+        <a-button type="primary" @click="showModal(text.id)">
           修改
         </a-button>
       </a>
     </a-table>
-    {{ data.size }} {{ data.total }}
     <a-pagination :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size" @change="changePage"/>
-
     <a-modal
         title="Title"
         :visible="visible"
@@ -23,7 +21,7 @@
         @ok="handleOk"
         @cancel="handleCancel"
     >
-      <edit/>
+      <edit :fromdata="fromData"/>
       <p>   </p>
     </a-modal>
   </div>
@@ -92,6 +90,8 @@ export default {
       pagesize: 3,
       visible: false,
       confirmLoading: false,
+      fromData:{
+      }
     };
   },
   mounted() {
@@ -119,8 +119,15 @@ export default {
         }
       })
     },
-    showModal() {
-      this.visible = true;
+    showModal(id) {
+      this.visible = true
+      axios.get(`/ebook/detail/${id}`).then((resp) => {
+        if (resp.status === 200 && resp.data.content != null) {
+            this.fromData = resp.data.content;
+        } else {
+          alert("数据加载失败")
+        }
+      })
     },
     handleOk(e) {
       this.ModalText = 'The modal will be closed after two seconds';
@@ -134,7 +141,7 @@ export default {
       console.log('Clicked cancel button');
       this.visible = false;
     },
-  },
+  }
 
 }
 ;
