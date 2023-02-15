@@ -23,5 +23,9 @@ public interface EbookService extends IService<Ebook> {
 
 //    进行数据回显
     Ebook showBookDetail(Ebook ebook,Integer id);
+//    进行数据的修改
+    boolean editBook(Ebook ebook);
+//    进行删除操作
+    Boolean deleteBook(Long id);
 
 }

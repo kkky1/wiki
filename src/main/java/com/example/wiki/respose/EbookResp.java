@@ -1,6 +1,8 @@
 package com.example.wiki.respose;
 
 import com.example.wiki.entity.Ebook;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.io.Serializable;
 
@@ -15,6 +17,8 @@ public class EbookResp extends Ebook implements Serializable {
     /**
      * id
      */
+//    解决雪花算法删除id时精度不够的问题
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     /**
      * 名称

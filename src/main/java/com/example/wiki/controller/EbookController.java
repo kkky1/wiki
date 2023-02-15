@@ -3,11 +3,15 @@ package com.example.wiki.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.wiki.Util.SnowId;
 import com.example.wiki.entity.Ebook;
+import com.example.wiki.mapper.EbookMapper;
 import com.example.wiki.respose.CommonResponse;
 import com.example.wiki.respose.EbookResp;
 import com.example.wiki.service.EbookService;
 import com.example.wiki.service.impl.EbookServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,11 +26,12 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/ebook")
+@Slf4j
 public class EbookController {
-
 
     @Resource
     private EbookServiceImpl ebookService;
+
 
     @GetMapping("/list")
     public CommonResponse<Ebook> getList() {
@@ -50,16 +55,25 @@ public class EbookController {
         return new CommonResponse<IPage>(true, null, ebookService.getPageBook(ebook, current, pagesize));
     }
 
-//    进行数据回显
+    //    进行数据回显
     @GetMapping("/detail/{id}")
-    public CommonResponse<Ebook> showDetail(EbookResp ebook,@PathVariable int id){
-        if (ebookService.showBookDetail(ebook,id) != null){
-            return new CommonResponse<>(true,null,ebookService.showBookDetail(ebook,id));
+    public CommonResponse showDetail(EbookResp ebook, @PathVariable int id) {
+        if (ebookService.showBookDetail(ebook, id) != null) {
+            return new CommonResponse<>(true, null, ebookService.showBookDetail(ebook, id));
+        } else {
+            return new CommonResponse(false, null, "操作失败");
         }
-        else{
-            return new CommonResponse<Ebook>(false,"加载失败",null);
-        }
+    }
 
+    //    进行数据的修改
+    @PostMapping("/updateBook")
+    public CommonResponse<Boolean> editBook(@RequestBody EbookResp ebook) {
+        return new CommonResponse<Boolean>(true, "修改成功", ebookService.editBook(ebook));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResponse<Boolean> deleteBook(@PathVariable Long id){
+        return new CommonResponse<>(true,null,ebookService.deleteBook(id));
     }
 }
 

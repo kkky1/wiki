@@ -1,5 +1,9 @@
 <template>
   <div>
+    <a-button type="primary" @click="addModal()">
+      新增
+    </a-button>
+    <!--        <success-alert style="display: inline-block"></success-alert>-->
     <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data.records">
       <a slot="name" slot-scope="text">{{ text }}</a>
       <a slot="delete" slot-scope="text">
@@ -18,17 +22,20 @@
         title="Title"
         :visible="visible"
         :confirm-loading="confirmLoading"
-        @ok="handleOk"
+        @ok="handleOk()"
         @cancel="handleCancel"
     >
       <edit :fromdata="fromData"/>
-      <p>   </p>
+      <p></p>
     </a-modal>
+
   </div>
 </template>
 <script>
 import axios from "axios";
 import edit from '@/views/Edit'
+import successAlert from '@/components/Alert/AlertSuccess'
+
 const columns = [
   {
     title: 'Name',
@@ -78,11 +85,13 @@ const data = [];
 
 export default {
   name: 'AdminBook',
-  components:{
-    edit
+  components: {
+    edit, successAlert
   },
   data() {
     return {
+      banner: false,
+      closable: true,
       data,
       columns,
       total: 99,
@@ -90,25 +99,34 @@ export default {
       pagesize: 3,
       visible: false,
       confirmLoading: false,
-      fromData:{
-      }
+      fromData: {}
     };
   },
   mounted() {
-    axios.get(`/ebook/list/${this.current}/${this.pagesize}`).then((resp) => {
-      if (resp.status === 200) {
-        this.data = resp.data.content
-        console.log(this.data)
-      } else {
-        alert("数据加载失败")
-      }
-    })
+    this.getCurrentList();
   },
   methods: {
-  deleteBook(id) {
-      console.log(id)
+    getCurrentList() {
+      axios.get(`/ebook/list/${this.current}/${this.pagesize}`).then((resp) => {
+        if (resp.status === 200) {
+          this.data = resp.data.content
+          console.log(this.data)
+        } else {
+          alert("数据加载失败")
+        }
+      })
     },
-  changePage(page, pageSize) {
+    deleteBook(id) {
+      axios.delete(`/ebook/delete/${id}`).then((resp) => {
+        if (resp.status === 200) {
+          console.log("删除成功")
+          this.getCurrentList()
+        } else {
+          alert("数据加载失败")
+        }
+      })
+    },
+    changePage(page, pageSize) {
       console.log(page, pageSize)
       axios.get(`/ebook/list/${page}/${this.pagesize}`).then((resp) => {
         if (resp.status === 200) {
@@ -123,25 +141,37 @@ export default {
       this.visible = true
       axios.get(`/ebook/detail/${id}`).then((resp) => {
         if (resp.status === 200 && resp.data.content != null) {
-            this.fromData = resp.data.content;
+          this.fromData = resp.data.content;
         } else {
           alert("数据加载失败")
         }
       })
     },
-    handleOk(e) {
-      this.ModalText = 'The modal will be closed after two seconds';
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
+    addModal() {
+      this.visible = true
+      this.fromData = {}
+      this.getCurrentList()
+    },
+    handleOk() {
+      console.log()
+      // this.ModalText = 'The modal will be closed after two seconds';
+      axios.post(`/ebook/updateBook`, this.fromData).then((resp) => {
+        if (resp.status === 200) {
+          console.log("success")
+        } else {
+          alert("数据加载失败")
+        }
+      })
+      this.visible = false
+      this.getCurrentList()
     },
     handleCancel(e) {
       console.log('Clicked cancel button');
       this.visible = false;
     },
-  }
+  },
+
+
 
 }
 ;
