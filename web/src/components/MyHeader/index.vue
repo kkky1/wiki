@@ -2,7 +2,6 @@
   <a-layout-header class="header">
     <div class="logo"/>
     <a-menu
-        v-model:selectedKeys="selectedKeys1"
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
@@ -14,6 +13,9 @@
         <router-link to="/adminBook">图书管理</router-link>
       </a-menu-item>
       <a-menu-item key="3">
+        <router-link to="/adminCategory">分类管理</router-link>
+      </a-menu-item>
+      <a-menu-item key="4">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
     </a-menu>

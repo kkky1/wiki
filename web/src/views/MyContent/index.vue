@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card class="cross" hoverable style="width: 300px" v-for="one,index in books" :key="index">
+    <a-card class="cross" hoverable style="width: 300px">
       <template #cover>
         <img
             alt="example"
@@ -12,7 +12,7 @@
         <edit-outlined key="edit"/>
         <ellipsis-outlined key="ellipsis"/>
       </template>
-      <a-card-meta :title="one.name" :description="one.description">
+      <a-card-meta :title="bookContent.name" >
         <template #avatar>
           <a-avatar src="https://joeschmoe.io/api/v1/random"/>
         </template>
@@ -21,26 +21,18 @@
   </div>
 </template>
 <script>
-import {SettingOutlined, EditOutlined, EllipsisOutlined} from '@ant-design/icons-vue';
-import {defineComponent} from 'vue';
-
-export default defineComponent({
+export default {
   name: 'Mycontent',
-  components: {
-    SettingOutlined,
-    EditOutlined,
-    EllipsisOutlined,
-  },
   props: ['bookContent'],
-  mounted() {
-    console.log(this)
+  updated() {
+    console.log("123",this.bookContent)
   },
   computed: {
     books() {
       return this._props.bookContent.content
     }
   }
-});
+};
 </script>
 
 <style>

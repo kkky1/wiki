@@ -4,7 +4,7 @@
       新增
     </a-button>
     <!--        <success-alert style="display: inline-block"></success-alert>-->
-    <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data.records">
+    <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data">
       <a slot="name" slot-scope="text">{{ text }}</a>
       <a slot="delete" slot-scope="text">
         <a-button type="danger" @click="deleteBook(text.id)">
@@ -17,7 +17,8 @@
         </a-button>
       </a>
     </a-table>
-    <a-pagination :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size" @change="changePage"/>
+    <a-pagination :pagination="false" :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size"
+                  @change="changePage"/>
     <a-modal
         title="Title"
         :visible="visible"
@@ -25,15 +26,16 @@
         @ok="handleOk()"
         @cancel="handleCancel"
     >
-      <edit :fromdata="fromData"/>
+      <editCategory :fromdata="fromData"/>
       <p></p>
     </a-modal>
 
   </div>
 </template>
 <script>
+import {Tool} from "@/util/tool";
 import axios from "axios";
-import edit from '@/views/Edit'
+import editCategory from '@/views/Edit/editCategory'
 import successAlert from '@/components/Alert/AlertSuccess'
 
 const columns = [
@@ -44,33 +46,15 @@ const columns = [
     scopedSlots: {customRender: 'name'},
   },
   {
-    title: '封面',
-    dataIndex: 'age',
-    key: 'age',
+    title: '父分类',
+    dataIndex: 'parent',
+    key: 'parent',
     width: 80,
   },
   {
-    title: '分类一',
-    dataIndex: 'category1Id',
-    key: 'category1Id ',
-    ellipsis: true,
-  },
-  {
-    title: '分类二',
-    dataIndex: 'category2Id',
-    key: 'category2Id',
-    ellipsis: true,
-  },
-  {
-    title: '阅读量',
-    dataIndex: 'viewCount',
-    key: 'viewCount',
-    ellipsis: true,
-  },
-  {
-    title: '点赞数',
-    dataIndex: 'voteCount',
-    key: 'voteCount',
+    title: '排序',
+    dataIndex: 'sort',
+    key: 'sort ',
     ellipsis: true,
   },
   {
@@ -80,13 +64,18 @@ const columns = [
     title: 'edit', dataIndex: '', key: 'y', scopedSlots: {customRender: 'edit'}
   }
 ];
-
-const data = [];
-
+const data = [{
+    id: '',
+    name: '',
+    children: [{
+      id: '',
+      name: ''
+    }]
+  }];
 export default {
-  name: 'AdminBook',
+  name: 'CategoryBook',
   components: {
-    edit, successAlert
+    editCategory, successAlert
   },
   data() {
     return {
@@ -94,9 +83,9 @@ export default {
       closable: true,
       data,
       columns,
-      total: 99,
+      total: 1,
       current: 1,
-      pagesize: 3,
+      pagesize: 1000,
       visible: false,
       confirmLoading: false,
       fromData: {}
@@ -107,17 +96,18 @@ export default {
   },
   methods: {
     getCurrentList() {
-      axios.get(`/ebook/list/${this.current}/${this.pagesize}`).then((resp) => {
+      axios.get(`/category/list`).then((resp) => {
         if (resp.status === 200) {
-          this.data = resp.data.content
-          console.log(this.data)
+          console.log(resp.data.content)
+          this.data = Tool.array2Tree(resp.data.content,0)
+          console.log(Tool.array2Tree(resp.data.content,0))
         } else {
           alert("数据加载失败")
         }
       })
     },
     deleteBook(id) {
-      axios.delete(`/ebook/delete/${id}`).then((resp) => {
+      axios.delete(`/category/delete/${id}`).then((resp) => {
         if (resp.status === 200) {
           console.log("删除成功")
           this.getCurrentList()
@@ -128,7 +118,7 @@ export default {
     },
     changePage(page, pageSize) {
       console.log(page, pageSize)
-      axios.get(`/ebook/list/${page}/${this.pagesize}`).then((resp) => {
+      axios.get(`/category/list/${page}/${this.pagesize}`).then((resp) => {
         if (resp.status === 200) {
           this.data = resp.data.content
           console.log(this.data)
@@ -139,7 +129,7 @@ export default {
     },
     showModal(id) {
       this.visible = true
-      axios.get(`/ebook/detail/${id}`).then((resp) => {
+      axios.get(`/category/detail/${id}`).then((resp) => {
         if (resp.status === 200 && resp.data.content != null) {
           this.fromData = resp.data.content;
         } else {
@@ -155,7 +145,7 @@ export default {
     handleOk() {
       console.log()
       // this.ModalText = 'The modal will be closed after two seconds';
-      axios.post(`/ebook/updateBook`, this.fromData).then((resp) => {
+      axios.post(`/category/updateBook`, this.fromData).then((resp) => {
         if (resp.status === 200) {
           console.log("success")
         } else {
@@ -170,10 +160,7 @@ export default {
       this.visible = false;
     },
   },
-
-
-}
-;
+};
 </script>
 
 <style>
