@@ -16,6 +16,10 @@ public class CommonResponse<T> {
      */
     private T content;
 
+    public CommonResponse() {
+
+    }
+
     public boolean getSuccess() {
         return success;
     }
