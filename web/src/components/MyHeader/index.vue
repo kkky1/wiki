@@ -26,7 +26,7 @@
         <span> 您好,{{ userInfo.name }} </span>
       </a-menu-item>
 
-      <a-button v-show="!userInfo.id" type="primary" @click="showUser">
+      <a-button type="primary" v-show="!userInfo.id" @click="showUser">
         登录
       </a-button>
     </a-menu>
@@ -45,7 +45,8 @@
 import userLogin from '@/views/Edit/userLogin'
 import axios from 'axios'
 import successAlert from '@/components/Alert/AlertSuccess'
-
+import { mapState } from 'vuex'
+import store from '@/store'
 export default ({
   name: 'MyHeader',
   components: {
@@ -59,8 +60,13 @@ export default ({
         loginName: '',
         password: '',
       },
-      userInfo: {},
     }
+  },
+  computed:{
+    ...mapState({
+      userInfo:state => state.UserContent.userInfo
+
+    })
   },
   methods: {
     showUser() {
@@ -72,8 +78,9 @@ export default ({
         console.log("resp", this.formInline)
         if (resp.status === 200) {
           this.visible = false
+          console.log(this)
           this.$refs.message.successalert(resp.data)
-          this.userInfo = resp.data.content
+          this.$store.commit('SENDUSERINFO',resp.data.content)
         } else {
           alert("数据加载失败")
         }

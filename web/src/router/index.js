@@ -5,6 +5,7 @@ import about from '@/views/About'
 import adminBook from '@/views/Admin/AdminBook'
 import CategoryBook from '@/views/Admin/CategoryBook'
 import AdminUser from '@/views/Admin/AdminUser'
+import doc from '@/views/Admin/DocBook'
 const router = new VueRouter({
     routes: [
         {
@@ -34,6 +35,10 @@ const router = new VueRouter({
         {
             path:'/adminUser',
             component:AdminUser
+        },
+        {
+            path:'/doc',
+            component:doc
         }
     ]
 })

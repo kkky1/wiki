@@ -91,7 +91,7 @@ public class UserController {
         UserResp userLogin = userService.userLogin(userReq);
         SnowId snowId = new SnowId();
         long token = snowId.nextId();
-//        userLogin.setToken(token);
+        userLogin.setToken(token);
         log.info("登录信息已经放入redis中：{}",token);
         log.info("登录用户为{}",userLogin);
         return new CommonResponse(true,"登录成功",userLogin);

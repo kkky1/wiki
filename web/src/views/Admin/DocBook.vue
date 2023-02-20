@@ -4,10 +4,10 @@
       新增
     </a-button>
     <!--        <success-alert style="display: inline-block"></success-alert>-->
-    <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data.records">
+    <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data">
       <a slot="name" slot-scope="text">{{ text }}</a>
       <a slot="delete" slot-scope="text">
-        <a-button type="danger" @click="deleteBook(text.id)">
+        <a-button type="danger" @click="deleteDoc(text.id)">
           删除
         </a-button>
       </a>
@@ -16,27 +16,26 @@
           修改
         </a-button>
       </a>
-      <a slot="count" slot-scope="text" href="javascript:;">
-        <router-link to="/doc">
-          点击查看
-        </router-link>
-      </a>
     </a-table>
-    <a-pagination :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size" @change="changePage"/>
+    <a-pagination :pagination="false" :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size"
+                  @change="changePage"/>
     <a-modal
-        title="Title"
+        title="文档"
         :visible="visible"
         :confirm-loading="confirmLoading"
         @ok="handleOk()"
         @cancel="handleCancel"
     >
-      <edit :fromdata="fromData"/>
+      <editDoc :fromdata="fromData"/>
+      <p></p>
     </a-modal>
+
   </div>
 </template>
 <script>
+import {Tool} from "@/util/tool";
 import axios from "axios";
-import edit from '@/views/Edit'
+import editDoc from '@/views/Edit/editDoc'
 import successAlert from '@/components/Alert/AlertSuccess'
 
 const columns = [
@@ -47,33 +46,15 @@ const columns = [
     scopedSlots: {customRender: 'name'},
   },
   {
-    title: '封面',
-    dataIndex: 'age',
-    key: 'age',
+    title: '父分类',
+    dataIndex: 'parent',
+    key: 'parent',
     width: 80,
   },
   {
-    title: '分类一',
-    dataIndex: 'category1Id',
-    key: 'category1Id ',
-    ellipsis: true,
-  },
-  {
-    title: '分类二',
-    dataIndex: 'category2Id',
-    key: 'category2Id',
-    ellipsis: true,
-  },
-  {
-    title: '阅读量',
-    dataIndex: 'viewCount',
-    key: 'viewCount',
-    ellipsis: true,
-  },
-  {
-    title: '点赞数',
-    dataIndex: 'voteCount',
-    key: 'voteCount',
+    title: '排序',
+    dataIndex: 'sort',
+    key: 'sort ',
     ellipsis: true,
   },
   {
@@ -81,18 +62,20 @@ const columns = [
   },
   {
     title: 'edit', dataIndex: '', key: 'y', scopedSlots: {customRender: 'edit'}
-  },
-  {
-    title: '文档数', dataIndex: '', key: 'z', scopedSlots: {customRender: 'count'}
   }
 ];
-
-const data = [];
-
+const data = [{
+    id: '',
+    name: '',
+    children: [{
+      id: '',
+      name: ''
+    }]
+  }];
 export default {
-  name: 'AdminBook',
+  name: 'Doc',
   components: {
-    edit, successAlert
+    editDoc, successAlert
   },
   data() {
     return {
@@ -100,9 +83,9 @@ export default {
       closable: true,
       data,
       columns,
-      total: 99,
+      total: 1,
       current: 1,
-      pagesize: 3,
+      pagesize: 1000,
       visible: false,
       confirmLoading: false,
       fromData: {}
@@ -113,17 +96,18 @@ export default {
   },
   methods: {
     getCurrentList() {
-      axios.get(`/ebook/list/${this.current}/${this.pagesize}`).then((resp) => {
+      axios.get(`/doc/list`).then((resp) => {
         if (resp.status === 200) {
-          this.data = resp.data.content
-          console.log(this.data)
+          console.log(resp.data.content)
+          this.data = Tool.array2Tree(resp.data.content,0)
+          console.log(Tool.array2Tree(resp.data.content,0))
         } else {
           alert("数据加载失败")
         }
       })
     },
-    deleteBook(id) {
-      axios.delete(`/ebook/delete/${id}`).then((resp) => {
+    deleteDoc(id) {
+      axios.delete(`/doc/delete/${id}`).then((resp) => {
         if (resp.status === 200) {
           console.log("删除成功")
           this.getCurrentList()
@@ -134,7 +118,7 @@ export default {
     },
     changePage(page, pageSize) {
       console.log(page, pageSize)
-      axios.get(`/ebook/list/${page}/${this.pagesize}`).then((resp) => {
+      axios.get(`/doc/list/${page}/${this.pagesize}`).then((resp) => {
         if (resp.status === 200) {
           this.data = resp.data.content
           console.log(this.data)
@@ -145,7 +129,7 @@ export default {
     },
     showModal(id) {
       this.visible = true
-      axios.get(`/ebook/detail/${id}`).then((resp) => {
+      axios.get(`/doc/detail/${id}`).then((resp) => {
         if (resp.status === 200 && resp.data.content != null) {
           this.fromData = resp.data.content;
         } else {
@@ -160,7 +144,8 @@ export default {
     },
     handleOk() {
       console.log()
-      axios.post(`/ebook/updateBook`, this.fromData).then((resp) => {
+      // this.ModalText = 'The modal will be closed after two seconds';
+      axios.post(`/doc/updateDoc`, this.fromData).then((resp) => {
         if (resp.status === 200) {
           console.log("success")
         } else {
@@ -170,14 +155,12 @@ export default {
       this.visible = false
       this.getCurrentList()
     },
-    handleCancel() {
+    handleCancel(e) {
+      console.log('Clicked cancel button');
       this.visible = false;
     },
   },
-
-
-}
-;
+};
 </script>
 
 <style>

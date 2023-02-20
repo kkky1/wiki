@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wiki.Util.SnowId;
 import com.example.wiki.entity.Ebook;
+import com.example.wiki.mapper.ContentMapper;
+import com.example.wiki.mapper.DocMapper;
 import com.example.wiki.mapper.EbookMapper;
 import com.example.wiki.respose.EbookResp;
 import com.example.wiki.service.EbookService;
@@ -30,6 +32,12 @@ import java.util.List;
 @Service
 @Slf4j
 public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements EbookService {
+
+    @Resource
+    private ContentMapper contentMapper;
+
+    @Resource
+    private DocMapper docMapper;
 
     @Resource
     private EbookService ebookService;
@@ -92,9 +100,7 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements
         return ebookService.removeById(id);
     }
 
-//    进行分页查询
-//    @Override
-//    public IPage<Ebook> getPageBook(Ebook ebook,int current,int pagesize){
-////        return ebookService.getPageBook()
-//    }
+
+
+
 }
