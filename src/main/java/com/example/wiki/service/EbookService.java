@@ -22,7 +22,7 @@ public interface EbookService extends IService<Ebook> {
     IPage<Ebook> getPageBook(Ebook ebook, int current, int pagesize);
 
 //    进行数据回显
-    Ebook showBookDetail(Ebook ebook,Integer id);
+    Ebook showBookDetail(Long id);
 //    进行数据的修改
     boolean editBook(Ebook ebook);
 //    进行删除操作

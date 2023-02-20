@@ -57,9 +57,9 @@ public class EbookController {
 
     //    进行数据回显
     @GetMapping("/detail/{id}")
-    public CommonResponse showDetail(EbookResp ebook, @PathVariable int id) {
-        if (ebookService.showBookDetail(ebook, id) != null) {
-            return new CommonResponse<>(true, null, ebookService.showBookDetail(ebook, id));
+    public CommonResponse showDetail(@PathVariable Long id) {
+        if (ebookService.showBookDetail(id) != null) {
+            return new CommonResponse<>(true, null, ebookService.showBookDetail(id));
         } else {
             return new CommonResponse(false, null, "操作失败");
         }

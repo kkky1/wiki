@@ -4,6 +4,7 @@ import com.example.wiki.exception.BusinessException;
 import com.example.wiki.respose.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,9 +38,25 @@ public class ControllerExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(value = BusinessException.class)
+    @ExceptionHandler(value = DuplicateKeyException.class)
     @ResponseBody
     public CommonResponse validExceptionHandler(BusinessException e) {
+        CommonResponse commonResp = new CommonResponse();
+        LOG.warn("业务异常：{}", e.getCode().getDesc());
+        commonResp.setSuccess(false);
+        commonResp.setMessage("用户名相同，请重新输入");
+        return commonResp;
+    }
+
+
+    /**
+     * 校验异常统一处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = BusinessException.class)
+    @ResponseBody
+    public CommonResponse CommonLoginName(BusinessException e) {
         CommonResponse commonResp = new CommonResponse();
         LOG.warn("业务异常：{}", e.getCode().getDesc());
         commonResp.setSuccess(false);

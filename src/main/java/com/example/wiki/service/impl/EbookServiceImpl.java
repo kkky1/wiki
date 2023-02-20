@@ -69,7 +69,7 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements
     }
 
     @Override
-    public Ebook showBookDetail(Ebook ebook,Integer id) {
+    public Ebook showBookDetail(Long id) {
         return ebookService.getById(id);
     }
 
@@ -88,7 +88,7 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements
     }
 
     @Override
-    public Boolean deleteBook(@PathVariable Long id) {
+    public Boolean deleteBook(Long id) {
         return ebookService.removeById(id);
     }
 

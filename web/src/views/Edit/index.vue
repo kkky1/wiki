@@ -9,7 +9,6 @@
     <a-form-item label="分类二">
       <a-input v-model="fromdata.category2Id"/>
     </a-form-item>
-    {{ fromdata }}
     <a-form-item label="阅读量">
       <a-input-number v-model="fromdata.viewCount"/>
     </a-form-item>

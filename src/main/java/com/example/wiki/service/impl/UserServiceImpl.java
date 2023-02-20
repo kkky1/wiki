@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.wiki.Util.CopyUtil;
 import com.example.wiki.Util.MD5Utils;
 import com.example.wiki.Util.SnowId;
 import com.example.wiki.entity.User;
 import com.example.wiki.exception.BusinessException;
 import com.example.wiki.exception.BusinessExceptionCode;
 import com.example.wiki.mapper.UserMapper;
+import com.example.wiki.request.UserReq;
 import com.example.wiki.respose.UserResp;
 import com.example.wiki.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,15 +44,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private SnowId snowId;
 
     @Override
-    public List<User> getBookList(User user) {
+    public List<User> getUserList(User user) {
         return userService.list();
     }
 
     @Override
     public List<UserResp> getLikeList(UserResp user, String name) {
-        LambdaQueryWrapper<User> bookList = new LambdaQueryWrapper<>();
-        bookList.like(User::getName, name);
-        List<User> users = userService.getBookList(user);
+        LambdaQueryWrapper<User> userList = new LambdaQueryWrapper<>();
+        userList.like(User::getName, name);
+        List<User> users = userService.getUserList(user);
 //      将进行对象的拷贝
         ArrayList<UserResp> userResps = new ArrayList<>();
         for (User user1 : users) {
@@ -62,19 +64,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public IPage<User> getPageBook(User user, int current, int pagesize) {
+    public IPage<User> getPageUser(User user, int current, int pagesize) {
         IPage<User> page = new Page<>(current, pagesize);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         return userService.page(page);
     }
 
     @Override
-    public User showBookDetail(User user, Integer id) {
+    public User showUserDetail(User user, Long id) {
         return userService.getById(id);
     }
 
     @Override
-    public boolean editBook(User user) {
+    public boolean editUser(User user) {
         try {
             if (ObjectUtils.isEmpty(user.getId())) {
                 log.info("进行数据的添加");
@@ -86,28 +88,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 if (selectUserName(user.getLoginName()) != null) {
                     UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
                     return userService.updateById(user);
-                } else {
-                    throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
                 }
-
             }
         } catch (DuplicateKeyException e) {
             return false;
         }
-
-
+        return false;
     }
 
     @Override
-    public Boolean deleteBook(@PathVariable Long id) {
+    public Boolean deleteUser(@PathVariable Long id) {
         return userService.removeById(id);
     }
 
     //    检测用户名是否重复
     public User selectUserName(String loginName) {
-        User user = new User();
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.lt(User::getName, user.getName());
+        queryWrapper.eq(User::getLoginName, loginName);
         User userName = userService.getOne(queryWrapper);
         if (userName != null) {
             return userName;
@@ -115,6 +112,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
     }
+
+    //    进行用户的登录
+    public UserResp userLogin(UserReq userReq) {
+        User user = selectUserName(userReq.getLoginName());
+        if (user != null) {
+            if (MD5Utils.string2MD5(userReq.getPassword()).equals(user.getPassword())) {
+                UserResp userResp = CopyUtil.copy(user, UserResp.class);
+                log.info("登录密码为：{}", MD5Utils.string2MD5(userReq.getPassword()));
+                return userResp;
+            }
+            else throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        }
+        throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+    }
+
 
 
 }

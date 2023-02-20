@@ -3,12 +3,11 @@
     <a-form-item label="名称">
       <a-input v-model="fromdata.loginName" :disabled="!!fromdata.id"/>
     </a-form-item>
-    {{fromdata}}
     <a-form-item label="昵称">
       <a-input v-model="fromdata.name" />
     </a-form-item>
     <a-form-item label="密码">
-      <a-input-number v-model="fromdata.password"/>
+      <a-input v-model="fromdata.password"/>
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
     </a-form-item>

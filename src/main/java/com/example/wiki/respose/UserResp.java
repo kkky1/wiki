@@ -15,11 +15,6 @@ import java.io.Serializable;
 public class UserResp extends User implements Serializable {
     private static final long serialVersionUID = 591732294265053030L;
     /**
-     * ID
-     */
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
-    /**
      * 登陆名
      */
     private String loginName;
@@ -27,19 +22,8 @@ public class UserResp extends User implements Serializable {
      * 昵称
      */
     private String name;
-    /**
-     * 密码
-     */
-    private String password;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Long token;
 
     public String getLoginName() {
         return loginName;
@@ -57,13 +41,21 @@ public class UserResp extends User implements Serializable {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public Long getToken() {
+        return token;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setToken(Long token) {
+        this.token = token;
     }
 
+    @Override
+    public String toString() {
+        return "UserResp{" +
+                "loginName='" + loginName + '\'' +
+                ", name='" + name + '\'' +
+                ", token=" + token +
+                '}';
+    }
 }
 

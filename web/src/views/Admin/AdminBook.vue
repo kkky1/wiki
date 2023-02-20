@@ -26,9 +26,7 @@
         @cancel="handleCancel"
     >
       <edit :fromdata="fromData"/>
-      <p></p>
     </a-modal>
-
   </div>
 </template>
 <script>
@@ -154,7 +152,6 @@ export default {
     },
     handleOk() {
       console.log()
-      // this.ModalText = 'The modal will be closed after two seconds';
       axios.post(`/ebook/updateBook`, this.fromData).then((resp) => {
         if (resp.status === 200) {
           console.log("success")
@@ -165,8 +162,7 @@ export default {
       this.visible = false
       this.getCurrentList()
     },
-    handleCancel(e) {
-      console.log('Clicked cancel button');
+    handleCancel() {
       this.visible = false;
     },
   },

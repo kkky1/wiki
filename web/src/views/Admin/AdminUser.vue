@@ -3,11 +3,11 @@
     <a-button type="primary" @click="addModal()">
       新增
     </a-button>
-            <success-alert ref="message" style="display: inline-block"></success-alert>
+    <success-alert ref="message" style="display: inline-block"></success-alert>
     <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data.records">
       <a slot="name" slot-scope="text">{{ text }}</a>
       <a slot="delete" slot-scope="text">
-        <a-button type="danger" @click="deleteBook(text.id)">
+        <a-button type="danger" @click="deleteUser(text.id)">
           删除
         </a-button>
       </a>
@@ -19,7 +19,7 @@
     </a-table>
     <a-pagination :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size" @change="changePage"/>
     <a-modal
-        title="Title"
+        title="用户登录"
         :visible="visible"
         :confirm-loading="confirmLoading"
         @ok="handleOk()"
@@ -98,7 +98,7 @@ export default {
         }
       })
     },
-    deleteBook(id) {
+    deleteUser(id) {
       axios.delete(`/user/delete/${id}`).then((resp) => {
         if (resp.status === 200) {
           console.log("删除成功")
@@ -122,6 +122,7 @@ export default {
     showModal(id) {
       this.visible = true
       axios.get(`/user/detail/${id}`).then((resp) => {
+        console.log(resp)
         if (resp.status === 200 && resp.data.content != null) {
           this.fromData = resp.data.content;
         } else {
@@ -137,7 +138,8 @@ export default {
     handleOk() {
       console.log()
       // this.ModalText = 'The modal will be closed after two seconds';
-      axios.post(`/user/updateBook`, this.fromData).then((resp) => {
+      axios.post(`/user/updateUser`, this.fromData).then((resp) => {
+        console.log(this.fromData)
         if (resp.data.success) {
           console.log(this.$refs.message.successalert(resp.data))
           this.visible = false

@@ -6,7 +6,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoryUtil {
+public class CopyUtil {
 
     /**
      * 单体复制
