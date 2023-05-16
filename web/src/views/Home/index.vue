@@ -18,6 +18,7 @@
           <a-menu-item v-for="(secondNav,index) in nav.children" :key="index" @click="handleclick(secondNav.id)">
             {{ secondNav.name }}
           </a-menu-item>
+
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
@@ -26,7 +27,7 @@
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
         <p  v-show="initView">欢迎观看图书</p>
-        <Mycontent v-show="!initView" :bookContent="bookContent"/>
+            <Mycontent v-show="!initView" :bookContent="bookContent"/>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -48,19 +49,13 @@ export default defineComponent({
     Mycontent
   },
   mounted() {
-    // axios.get('/ebook/list').then((resp) => {
-    //   if (resp.status === 200) {
-    //     this.bookContent = resp.data
-    //   } else {
-    //     alert("数据加载失败")
-    //   }
-    // })
     this.getCurrentList()
   },
   data() {
     return {
       initView:true,
       bookContent: [],
+      category2Id: 0,
       bookCategory: [{
         id: '',
         name: '',
@@ -75,9 +70,8 @@ export default defineComponent({
     getCurrentList() {
       axios.get(`/category/list`).then((resp) => {
         if (resp.status === 200) {
-          console.log(resp.data.content)
           this.bookCategory = Tool.array2Tree(resp.data.content, 0)
-          console.log(Tool.array2Tree(resp.data.content, 0))
+          // console.log(Tool.array2Tree(resp.data.content, 0))
         } else {
           alert("数据加载失败")
         }
@@ -87,8 +81,7 @@ export default defineComponent({
       this.initView = false
       axios.get(`/category/getParentId/${id}`).then((resp) => {
         if (resp.status === 200) {
-          this.bookContent = resp.data
-          console.log(this.bookContent)
+          this.bookContent = JSON.parse(JSON.stringify(resp.data))
         } else {
           alert("数据加载失败")
         }

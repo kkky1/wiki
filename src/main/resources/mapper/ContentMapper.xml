@@ -51,6 +51,14 @@
         values (#{content})
     </insert>
 
+    <!--新增所有列-->
+    <insert id="insertById" keyProperty="id" useGeneratedKeys="true">
+        insert into content(content)
+        values (#{content}) where id = #{id}
+    </insert>
+
+
+
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
         insert into content(content)
         values

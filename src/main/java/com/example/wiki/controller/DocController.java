@@ -2,6 +2,7 @@ package com.example.wiki.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.wiki.entity.Category;
 import com.example.wiki.entity.Doc;
 import com.example.wiki.respose.DocResp;
 import com.example.wiki.respose.CommonResponse;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 电子书(Doc)表控制层
@@ -30,6 +32,11 @@ public class DocController {
     @GetMapping("/list")
     public CommonResponse<Doc> getList(Doc doc) {
         return new CommonResponse(true, "null", docService.getDocList(doc));
+    }
+
+    @GetMapping("/doclist/{id}")
+    public CommonResponse<List<DocResp>> getList(Doc doc, @PathVariable Long id) {
+        return new CommonResponse(true, "null", docService.getDocListDoc(doc,id));
     }
 
     @GetMapping("/list/{name}")
@@ -61,8 +68,8 @@ public class DocController {
 
     //    进行数据的修改
     @PostMapping("/updateDoc")
-    public CommonResponse<Boolean> editDoc(@RequestBody DocResp doc) {
-        return new CommonResponse<Boolean>(true, "修改成功", docService.editDoc(doc));
+    public void editDoc(@RequestBody DocResp doc) {
+        docService.editDoc(doc);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -76,5 +83,11 @@ public class DocController {
         queryWrapper.eq(Doc::getId,id);
         return docService.getOne(queryWrapper);
     }
+
+    @GetMapping("/content/{id}")
+    public CommonResponse<String> findContent(@PathVariable Long id) {
+        return new CommonResponse(true, "null", docService.findContent(id));
+    }
+
 }
 

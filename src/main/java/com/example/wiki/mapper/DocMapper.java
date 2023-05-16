@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface DocMapper extends BaseMapper<Doc> {
 
-    int updateViewCountInt(@Param("id") Integer id);
+    int updateViewCountInt(@Param("id") Long id);
+
+    int updateLike(@Param("id") Long id);
 
 }

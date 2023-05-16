@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wiki.Util.SnowId;
 import com.example.wiki.entity.Ebook;
+import com.example.wiki.exception.BusinessException;
+import com.example.wiki.exception.BusinessExceptionCode;
 import com.example.wiki.mapper.ContentMapper;
 import com.example.wiki.mapper.DocMapper;
 import com.example.wiki.mapper.EbookMapper;
@@ -98,6 +100,17 @@ public class EbookServiceImpl extends ServiceImpl<EbookMapper, Ebook> implements
     @Override
     public Boolean deleteBook(Long id) {
         return ebookService.removeById(id);
+    }
+
+//    进行点赞功能
+    public Boolean getLike(Long id){
+        int updateLike = docMapper.updateLike(id);
+        int updateLike1 = ebookMapper.updateLike(id);
+        if (updateLike == 0 && updateLike1 == 0){
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }else{
+            return updateLike>0;
+        }
     }
 
 

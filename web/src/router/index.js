@@ -6,6 +6,8 @@ import adminBook from '@/views/Admin/AdminBook'
 import CategoryBook from '@/views/Admin/CategoryBook'
 import AdminUser from '@/views/Admin/AdminUser'
 import doc from '@/views/Admin/DocBook'
+import docContent from '@/views/Doc'
+import concrete from '@/views/BookDetail/ConcretDetail'
 const router = new VueRouter({
     routes: [
         {
@@ -39,6 +41,14 @@ const router = new VueRouter({
         {
             path:'/doc',
             component:doc
+        },
+        {
+            path:'/docDetail',
+            component:docContent
+        },
+        {
+            path:'/concrete',
+            component:concrete
         }
     ]
 })

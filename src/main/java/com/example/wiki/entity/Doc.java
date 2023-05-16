@@ -43,7 +43,6 @@ public class Doc implements Serializable {
      */
     private Integer voteCount;
 
-
     public Long getId() {
         return id;
     }
@@ -100,5 +99,17 @@ public class Doc implements Serializable {
         this.voteCount = voteCount;
     }
 
+    @Override
+    public String toString() {
+        return "Doc{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                '}';
+    }
 }
 

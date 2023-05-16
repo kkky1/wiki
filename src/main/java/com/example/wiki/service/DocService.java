@@ -26,7 +26,7 @@ public interface DocService extends IService<Doc> {
     //    进行数据回显
     Doc showDocDetail(Doc doc,Long id);
     //    进行数据的修改
-    boolean editDoc(Doc doc);
+    void editDoc(Doc doc);
     //    进行删除操作
     Boolean deleteDoc(Long id);
 

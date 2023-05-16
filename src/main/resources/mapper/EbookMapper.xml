@@ -3,7 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.wiki.mapper.EbookMapper">
-    <select id="selectAll" resultType="com.example.wiki.entity.Ebook">
-
-    </select>
+    <!--查询单个-->
+    <update id="updateViewCountInt">
+        update ebook set view_count=view_count+1 where id = #{id}
+    </update>
+    <!--点赞-->
+    <update id="updateLike">
+        update ebook set vote_count=vote_count+1 where id = #{id}
+    </update>
 </mapper>

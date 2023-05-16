@@ -35,7 +35,7 @@ public class EbookController {
 
     @GetMapping("/list")
     public CommonResponse<Ebook> getList() {
-        return new CommonResponse(true, "null", ebookService.getBookList());
+        return new CommonResponse(true, null, ebookService.getBookList());
     }
 
     @GetMapping("/list/{name}")
@@ -74,6 +74,11 @@ public class EbookController {
     @DeleteMapping("/delete/{id}")
     public CommonResponse<Boolean> deleteBook(@PathVariable Long id){
         return new CommonResponse<>(true,null,ebookService.deleteBook(id));
+    }
+
+    @PostMapping("/like/{id}")
+    public CommonResponse<Boolean> sendLike(@PathVariable Long id){
+        return new CommonResponse<>(true,null,ebookService.getLike(id));
     }
 }
 

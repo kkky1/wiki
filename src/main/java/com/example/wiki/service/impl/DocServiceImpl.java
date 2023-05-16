@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.wiki.Util.CopyUtil;
 import com.example.wiki.Util.SnowId;
+import com.example.wiki.entity.Content;
 import com.example.wiki.entity.Doc;
+import com.example.wiki.mapper.ContentMapper;
 import com.example.wiki.mapper.DocMapper;
 import com.example.wiki.respose.DocResp;
 import com.example.wiki.service.DocService;
@@ -34,6 +37,9 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc> implements DocSe
     private DocService docService;
 
     @Resource
+    private ContentMapper contentMapper;
+
+    @Resource
     private SnowId snowId;
 
     @Override
@@ -42,6 +48,15 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc> implements DocSe
         lambdaQueryWrapper.orderByAsc(Doc::getSort);
         return docService.list(lambdaQueryWrapper);
     }
+
+    public List<DocResp> getDocListDoc(Doc doc,Long id) {
+        LambdaQueryWrapper<Doc> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Doc::getEbookId,id);
+        List<Doc> list = docService.list(lambdaQueryWrapper);
+        List<DocResp> docRespList = CopyUtil.copyList(list, DocResp.class);
+        return docRespList;
+    }
+
 
     @Override
     public List<DocResp> getLikeList(DocResp doc, String name) {
@@ -66,20 +81,34 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc> implements DocSe
     }
 
     @Override
-    public Doc showDocDetail(Doc doc,Long id) {
-        return docService.getById(id);
+    public DocResp showDocDetail(Doc doc, Long id) {
+        Doc doc1 = docService.getById(id);
+        Content content = contentMapper.selectById(id);
+        DocResp docResp = CopyUtil.copy(doc1, DocResp.class);
+        if (content != null) {
+            docResp.setContent(content.getContent());
+        }
+        return docResp;
     }
 
     @Override
-    public boolean editDoc(Doc doc) {
-        if (ObjectUtils.isEmpty(doc.getId())){
+    public void editDoc(Doc doc) {
+        Doc doc1 = CopyUtil.copy(doc, Doc.class);
+        Content content = CopyUtil.copy(doc, Content.class);
+        if (ObjectUtils.isEmpty(doc.getId())) {
             log.info("进行数据的添加");
-            doc.setId(snowId.nextId());
-            return docService.save(doc);
-        }
-        else {
-            UpdateWrapper<Doc> updateWrapper = new UpdateWrapper<>();
-            return docService.updateById(doc);
+            long id = snowId.nextId();
+            doc.setId(id);
+            content.setId(id);
+            contentMapper.insertContent(content);
+            docService.save(doc1);
+        } else {
+            docService.updateById(doc);
+            int contentUpdata = contentMapper.updateById(content);
+            if (contentUpdata == 0) {
+                contentMapper.insertContent(content);
+            }
+
         }
 
     }
@@ -87,6 +116,11 @@ public class DocServiceImpl extends ServiceImpl<DocMapper, Doc> implements DocSe
     @Override
     public Boolean deleteDoc(@PathVariable Long id) {
         return docService.removeById(id);
+    }
+
+    public String findContent(Long id){
+        Content content = contentMapper.selectById(id);
+        return content.getContent();
     }
 
 }

@@ -17,7 +17,7 @@
         </a-button>
       </a>
       <a slot="count" slot-scope="text" href="javascript:;">
-        <router-link to="/doc">
+        <router-link :to="`/concrete?ebookid=${text.id}`" >
           点击查看
         </router-link>
       </a>

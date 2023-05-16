@@ -28,4 +28,6 @@ public interface EbookService extends IService<Ebook> {
 //    进行删除操作
     Boolean deleteBook(Long id);
 
+
+
 }

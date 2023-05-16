@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.wiki.entity.Category;
 import com.example.wiki.entity.Ebook;
+import com.example.wiki.mapper.EbookMapper;
 import com.example.wiki.respose.CommonResponse;
 import com.example.wiki.respose.CategoryResp;
 import com.example.wiki.respose.EbookResp;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 电子书(Category)表控制层
@@ -25,6 +27,8 @@ import javax.annotation.Resource;
 @Slf4j
 public class CategoryController {
 
+    @Resource
+    private EbookMapper ebookMapper;
 
     @Resource
     private CategoryServiceImpl categoryService;
@@ -34,6 +38,8 @@ public class CategoryController {
     public CommonResponse<Category> getList(Category category) {
         return new CommonResponse(true, "null", categoryService.getBookList(category));
     }
+
+
 
     @GetMapping("/list/{name}")
     public CommonResponse<CategoryResp> getLikeBookList(CategoryResp category, @PathVariable String name) {
@@ -73,11 +79,20 @@ public class CategoryController {
         return new CommonResponse<>(true,null,categoryService.deleteBook(id));
     }
 
+//    @GetMapping("/getParentId/{id}")
+//    public Category getParentId(Category category,@PathVariable Long id){
+//        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper();
+//        queryWrapper.eq(Category::getId,id);
+//        return categoryService.getOne(queryWrapper);
+//    }
+
     @GetMapping("/getParentId/{id}")
-    public Category getParentId(Category category,@PathVariable Long id){
-        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.eq(Category::getId,id);
-        return categoryService.getOne(queryWrapper);
+    public List<Ebook> getParentEbook(@PathVariable Long id){
+        LambdaQueryWrapper<Ebook> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.eq(Ebook::getCategory2Id,id);
+        return ebookMapper.selectList(queryWrapper);
     }
+
+
 }
 

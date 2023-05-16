@@ -23,7 +23,7 @@
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
       <a-menu-item v-show="userInfo.id" key="6">
-        <span> 您好,{{ userInfo.name }} </span>
+        <span> 您好,{{ userInfo.loginName }} </span>
       </a-menu-item>
 
       <a-button type="primary" v-show="!userInfo.id" @click="showUser">
@@ -65,8 +65,10 @@ export default ({
   computed:{
     ...mapState({
       userInfo:state => state.UserContent.userInfo
-
     })
+  },
+  mounted() {
+    console.log("userinfo",this.userInfo)
   },
   methods: {
     showUser() {

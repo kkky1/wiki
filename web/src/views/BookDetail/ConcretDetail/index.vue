@@ -1,26 +1,5 @@
 <template>
   <div>
-<!--    <a-button type="primary" @click="addModal()">
-      新增
-    </a-button>
-
-    <a-table :pagination="false" rowKey="id" :columns="columns" :data-source="data">
-      <a slot="name" slot-scope="text">{{ text }}</a>
-      <a slot="delete" slot-scope="text">
-        <a-button type="danger" @click="deleteDoc(text.id)">
-          删除
-        </a-button>
-      </a>
-      <a slot="edit" slot-scope="text" href="javascript:;">
-        <a-button type="primary" @click="showModal(text.id)">
-          修改
-        </a-button>
-      </a>
-    </a-table>
-
-    <a-pagination :pagination="false" :default-current="1" :defaultPageSize="data.size" :total="data.total*data.size"
-                  @change="changePage"/>-->
-
     <a-row>
       <a-col :span="8">
         <a-button type="primary" @click="addModal()">
@@ -56,7 +35,7 @@
 
       <a-col :span="16">
         <a-button type="primary" @click="saveDoc">保存</a-button>
-          <editDoc :fromdata="fromData"/>
+        <editDoc :fromdata="fromData"/>
       </a-col>
     </a-row>
 
@@ -104,7 +83,7 @@ const data = [{
   }]
 }];
 export default {
-  name: 'Doc',
+  name: 'concrete',
   components: {
     editDoc, successAlert
   },
@@ -119,11 +98,11 @@ export default {
       pagesize: 1000,
       visible: false,
       confirmLoading: false,
-      fromData: {}
+      fromData: {},
     };
   },
   mounted() {
-    this.getCurrentList();
+    this.findContent()
   },
   beforeDestroy() {
     const editor = this.editor
@@ -131,22 +110,11 @@ export default {
     editor.destroy() // 组件销毁时，及时销毁编辑器
   },
   methods: {
-    getCurrentList() {
-      axios.get(`/doc/list`).then((resp) => {
-        if (resp.status === 200) {
-          console.log(resp.data.content)
-          this.data = Tool.array2Tree(resp.data.content,0)
-          console.log(Tool.array2Tree(resp.data.content,0))
-        } else {
-          alert("数据加载失败")
-        }
-      })
-    },
     deleteDoc(id) {
       axios.delete(`/doc/delete/${id}`).then((resp) => {
         if (resp.status === 200) {
           this.$message.success("删除成功")
-          this.getCurrentList()
+          this.findContent()
         } else {
           this.$message.error("操作失败")
         }
@@ -175,7 +143,7 @@ export default {
     addModal() {
       this.visible = true
       this.fromData = {}
-      this.getCurrentList()
+      this.findContent()
     },
     saveDoc() {
       axios.post(`/doc/updateDoc`, this.fromData).then((resp) => {
@@ -187,13 +155,15 @@ export default {
         }
       })
       this.visible = false
-      this.getCurrentList()
+      this.findContent()
     },
-    findContent(id){
-      axios.get(`/doc/content/${id}`).then((resp) => {
+    findContent(){
+      axios.get(`/doc/doclist/${this.$route.query.ebookid}`).then((resp) => {
         console.log(resp)
         if (resp.status === 200) {
           this.fromData.content = resp.data.content;
+          this.data = Tool.array2Tree(resp.data.content,0)
+
         } else {
           alert("数据加载失败")
         }
